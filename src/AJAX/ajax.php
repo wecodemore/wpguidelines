@@ -1,40 +1,33 @@
 <?php
 
-add_action( 'wp_enqueue_scripts', 'addAJAXScripts' );
-/**
- * Register, enqueue and localize the script
- */
-function addAJAXScripts()
+$name = 'your-script-handle';
+
+# Logged in users:
+add_action( "wp_ajax_{$name}_action", array( $this, 'AJAXCallback' ) );
+
+# Guests:
+add_action( "wp_ajax_nopriv_{$name}_action", array( $this, 'AJAXCallback' ) );
+
+
+function AJAXCallback()
 {
-	$name = 'your-script-handle';
-	wp_register_script(
-		$name,
-		plugin_dir_url( __FILE__ ).'assets/ajax.js',
-		array( 'jquery', ),
-		filemtime( plugin_dir_path( __FILE__ ).'assets/ajax.js' ),
-		true
-	);
+	// Nonce not met! Fail and abort!
+	if ( ! check_ajax_referer(
+		$_POST['action'],
+		'_ajax_nonce',
+		false
+	) )
+		wp_send_json_error();
 
-	wp_enqueue_script( $name );
+	// @TODO Validate and sanitize data
+	$data = $_POST;
 
-	$action = 'some-ajax-action';
-	// In case there is user input data, use `esc_js()`, `filter_var()`
-	// and other sanitization functions to not open the door for hacks.
-	wp_localize_script(
-		$name,
-		'plugin_YourScriptHandle_Object',
+	// @TODO Set fail cases
+	if ( 'dragons' !== $data['foo'] )
+		wp_send_json_error( 'Missing dragons' );
 
-		array(
-			// This should always be the same
-			'adminurl'     => esc_js( admin_url( 'admin-ajax.php' ) ),
-			'_ajax_nonce'  => wp_create_nonce( $action ),
-
-			// Here goes your custom, plugin specific data
-			'custom'       => 'data',
-			'custom_array' => array(
-				'foo' => 'bar',
-			),
-		)
-	);
+	wp_send_json_success( array(
+		'foo' => 'bar',
+		'baz' => 'dragons',
+	) );
 }
-

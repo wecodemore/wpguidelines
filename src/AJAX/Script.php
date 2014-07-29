@@ -27,7 +27,8 @@ function addAJAXScripts()
 		array(
 			// This should always be the same
 			'adminurl'     => esc_js( admin_url( 'admin-ajax.php' ) ),
-			'_ajax_nonce'  => wp_create_nonce( $action ),
+			'_ajax_nonce'  => wp_create_nonce( "{$action}_action" ),
+			'action'       => $action,
 
 			// Here goes your custom, plugin specific data
 			'custom'       => 'data',
