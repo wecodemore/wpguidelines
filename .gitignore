@@ -1,0 +1,31 @@
+.DS_Store
+Thumbs.db
+
+## IDEs
+# PHPStorm
+/.idea/
+# Sublime
+*.sublime-workspace
+
+## Package Managers
+/vendor/
+/www/vendor/
+/node_modules/
+/assets/bower/
+
+composer.phar
+
+## Project structure folders
+# tmp storage
+/.cache/
+/dev/templates/blocks/
+
+# Logs
+/log/
+*.log
+
+# Deploy
+/www/
+
+# Let's keep some folders so people get into it without a full setup
+!.gitkeep
